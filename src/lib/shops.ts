@@ -9,3 +9,11 @@ export type Shop = (typeof SHOPS)[number];
 export function isShop(value: string): value is Shop {
   return (SHOPS as readonly string[]).includes(value);
 }
+
+// チケットを使える店（＝買った店の相手）。ando で買ったら hayashi で使う
+export function partnerShop(shop: Shop): Shop {
+  if (shop === "ando") {
+    return "hayashi";
+  }
+  return "ando";
+}

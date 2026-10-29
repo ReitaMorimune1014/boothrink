@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isShop, SHOPS } from "@/lib/shops";
+import { isShop, partnerShop, SHOPS } from "@/lib/shops";
 
 describe("isShop", () => {
   it("登録されている店の名前ならtrue", () => {
@@ -12,5 +12,12 @@ describe("isShop", () => {
     expect(isShop("tanaka")).toBe(false);
     expect(isShop("Ando")).toBe(false);
     expect(isShop("")).toBe(false);
+  });
+});
+
+describe("partnerShop", () => {
+  it("たこ焼き（ando）で買ったら唐揚げ（hayashi）で使う。逆も同じ", () => {
+    expect(partnerShop("ando")).toBe("hayashi");
+    expect(partnerShop("hayashi")).toBe("ando");
   });
 });

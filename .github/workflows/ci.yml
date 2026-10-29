@@ -19,6 +19,20 @@ jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
+    # テストは本物の Redis を使う（二重発行を防げているかを、Redis 本体の動きで確かめるため）
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        # Redis が起動しきる前にテストが始まらないよう、PING が通るまで待つ
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v4
 
