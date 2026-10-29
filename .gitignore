@@ -1,0 +1,23 @@
+# 依存パッケージ
+/node_modules
+
+# Next.js のビルド結果
+/.next/
+/out/
+/build
+
+# テスト
+/coverage
+
+# 環境変数（パスワードやRedisのトークンが入るので絶対にコミットしない）
+.env*
+!.env.example
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# その他
+.DS_Store
+npm-debug.log*
+.vercel
