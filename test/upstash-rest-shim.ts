@@ -66,7 +66,9 @@ export type Shim = {
   close: () => Promise<void>;
 };
 
-export async function startUpstashShim(redisUrl: string): Promise<Shim> {
+// port を省略すると、空いているポートを自動で使う（テスト用）。
+// 手元での動作確認では、.env.local に書く URL が毎回変わらないように固定のポートを渡す
+export async function startUpstashShim(redisUrl: string, port = 0): Promise<Shim> {
   // テストでは、つながらなければすぐに失敗させたいので、自動の再接続はしない
   const redis: RedisClient = createClient({ url: redisUrl, socket: { reconnectStrategy: false } });
   // node-redis は接続エラーを 'error' イベントでも知らせる。受け取る人がいないとプロセスごと落ちるので、
@@ -99,11 +101,11 @@ export async function startUpstashShim(redisUrl: string): Promise<Shim> {
     response.end(JSON.stringify(reply));
   });
 
-  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
-  const { port } = server.address() as AddressInfo;
+  await new Promise<void>((resolve) => server.listen(port, "127.0.0.1", resolve));
+  const address = server.address() as AddressInfo;
 
   return {
-    url: `http://127.0.0.1:${port}`,
+    url: `http://127.0.0.1:${address.port}`,
     token,
     close: async () => {
       await new Promise<void>((resolve) => server.close(() => resolve()));
