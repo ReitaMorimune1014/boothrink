@@ -14,3 +14,15 @@ const timeFormatter = new Intl.DateTimeFormat("ja-JP", {
 export function formatJstTime(date: Date): string {
   return timeFormatter.format(date);
 }
+
+const hourMinuteFormatter = new Intl.DateTimeFormat("ja-JP", {
+  timeZone: "Asia/Tokyo",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+
+// 例: "14:05"
+export function formatJstHourMinute(date: Date): string {
+  return hourMinuteFormatter.format(date);
+}

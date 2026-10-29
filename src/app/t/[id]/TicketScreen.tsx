@@ -5,7 +5,7 @@ import { ErrorView } from "@/components/customer/ErrorView";
 import styles from "@/components/customer/customer.module.css";
 import type { TicketData } from "@/lib/claim";
 import type { CustomerErrorReason } from "@/lib/customer-messages";
-import { formatJstTime } from "@/lib/format";
+import { formatJstHourMinute } from "@/lib/format";
 import { BENEFITS, SHOP_NAMES } from "@/lib/shops";
 import { requestUseTicket } from "./ticket-api";
 
@@ -14,19 +14,21 @@ type ScreenState =
   | { kind: "unused" }
   | { kind: "confirming" } // 確認ダイアログを表示中
   | { kind: "submitting" } // 「処理中…」
-  | { kind: "used"; usedAt: string }
+  | { kind: "used"; shownAt: string } // shownAt: 使用済みの画面を表示した時刻
   | { kind: "error"; reason: CustomerErrorReason };
 
 type Props = {
   id: string;
   ticket: TicketData;
-  // サーバーで読んだ時点で使用済みなら、その時刻（未使用なら null）
-  initialUsedAt: string | null;
+  // サーバーで読んだ時点で使用済みだったか
+  initiallyUsed: boolean;
+  // サーバーがこのページを作った時刻（＝お客さんが画面を開いた時刻）
+  renderedAt: string;
 };
 
-export function TicketScreen({ id, ticket, initialUsedAt }: Props) {
+export function TicketScreen({ id, ticket, initiallyUsed, renderedAt }: Props) {
   const [state, setState] = useState<ScreenState>(
-    initialUsedAt === null ? { kind: "unused" } : { kind: "used", usedAt: initialUsedAt },
+    initiallyUsed ? { kind: "used", shownAt: renderedAt } : { kind: "unused" },
   );
 
   async function handleConfirm() {
@@ -34,7 +36,8 @@ export function TicketScreen({ id, ticket, initialUsedAt }: Props) {
     // 使用済みかどうかはサーバーが決める。画面はその結果を表示するだけ
     const result = await requestUseTicket(id);
     if (result.ok) {
-      setState({ kind: "used", usedAt: result.usedAt });
+      // 「使う」を押して使用済みになった場合は、この画面に切り替わった時刻を表示する
+      setState({ kind: "used", shownAt: new Date().toISOString() });
     } else {
       setState({ kind: "error", reason: result.reason });
     }
@@ -51,7 +54,9 @@ export function TicketScreen({ id, ticket, initialUsedAt }: Props) {
         <p className={styles.usedDetail}>
           {SHOP_NAMES[ticket.validAt]}：{BENEFITS[ticket.validAt]}
         </p>
-        <p className={styles.usedDetail}>使用時刻 {formatJstTime(new Date(state.usedAt))}</p>
+        {/* 「使う」を押した時刻ではなく、画面を開いた時刻を出す。
+            時刻は進めない。スクリーンショットなら撮ったときの時刻のままなので、今の時刻と比べれば見分けられる */}
+        <p className={styles.shownAt}>現在 {formatJstHourMinute(new Date(state.shownAt))}</p>
         <p className={styles.usedDetail}>ご利用ありがとうございました</p>
       </main>
     );

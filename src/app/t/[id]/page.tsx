@@ -29,6 +29,9 @@ export default async function TicketPage({ params }: { params: Promise<{ id: str
     return <ErrorView reason="stopped" />;
   }
 
-  const initialUsedAt = view.status === "used" ? view.usedAt : null;
-  return <TicketScreen id={id} ticket={view.ticket} initialUsedAt={initialUsedAt} />;
+  // 時刻はサーバーの時計で決める（お客さんのスマホの時計がずれていても、正しい時刻を出すため）
+  const renderedAt = new Date().toISOString();
+  return (
+    <TicketScreen id={id} ticket={view.ticket} initiallyUsed={view.status === "used"} renderedAt={renderedAt} />
+  );
 }
