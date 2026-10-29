@@ -1,0 +1,44 @@
+name: CI
+
+# すべてのPRと、main への push（マージ）のたびに動かす。
+# PR の向き先を main に限らないのは、前のステップのブランチに向けて積み重ねたPR（stacked PR）でも CI を動かすため
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# 同じブランチに続けてpushしたら、古い実行は止めて新しい方だけ動かす（無駄な待ち時間を減らす）
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # npm install ではなく npm ci: package-lock.json の通りに入れるので、手元とCIで同じバージョンになる
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: 型チェック
+        run: npm run typecheck
+
+      - name: テスト
+        run: npm test
+
+      # lint・型・テストが通っても、ビルドで落ちることがある（Server/Client Componentの使い分けなど）ので確認する
+      - name: ビルド
+        run: npm run build
