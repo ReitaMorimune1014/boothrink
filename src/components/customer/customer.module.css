@@ -112,7 +112,8 @@
 }
 
 /* 使用済み画面。
-   背景を動かし、現在時刻を秒まで出すのは「スクリーンショットを見せて使い回す」のを店員さんが見破れるようにするため */
+   背景を動かすのは「スクリーンショットを見せて使い回す」のを店員さんが見破れるようにするため
+   （スクリーンショットでは背景が止まっている） */
 .usedScreen {
   min-height: 100dvh;
   display: flex;
@@ -149,8 +150,3 @@
   font-size: 1.25rem;
 }
 
-.clock {
-  margin: 0;
-  font-size: 3rem;
-  font-variant-numeric: tabular-nums;
-}

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { ErrorView } from "@/components/customer/ErrorView";
-import { LiveClock } from "@/components/customer/LiveClock";
 import styles from "@/components/customer/customer.module.css";
 import type { TicketData } from "@/lib/claim";
 import type { CustomerErrorReason } from "@/lib/customer-messages";
@@ -53,7 +52,6 @@ export function TicketScreen({ id, ticket, initialUsedAt }: Props) {
           {SHOP_NAMES[ticket.validAt]}：{BENEFITS[ticket.validAt]}
         </p>
         <p className={styles.usedDetail}>使用時刻 {formatJstTime(new Date(state.usedAt))}</p>
-        <LiveClock />
         <p className={styles.usedDetail}>ご利用ありがとうございました</p>
       </main>
     );
