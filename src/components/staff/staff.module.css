@@ -1,0 +1,25 @@
+/* 店員用画面（タブレット・管理画面）の共通部品 */
+
+.passwordForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(100%, 360px);
+  font-size: 1.25rem;
+}
+
+.passwordForm input,
+.passwordForm button {
+  font-size: 1.25rem;
+  padding: 12px;
+}
+
+.errorText {
+  margin: 0;
+  color: #b00020;
+}
+
+.message {
+  margin: 0;
+  font-size: 1.25rem;
+}

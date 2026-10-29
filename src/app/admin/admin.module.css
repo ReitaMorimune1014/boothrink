@@ -1,0 +1,108 @@
+/* 管理画面。スマホでも操作できるよう、店ごとのカードを縦に並べる */
+
+.screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px;
+  background: #f4f4f4;
+  color: #111111;
+  font-family: system-ui, sans-serif;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.message,
+.meta {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.warning {
+  margin: 0;
+  color: #b00020;
+}
+
+.cards {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.shopName {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.numbers {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.numbers dt {
+  font-size: 0.875rem;
+  color: #555555;
+}
+
+.numbers dd {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+}
+
+.open,
+.stopped {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: bold;
+}
+
+.open {
+  color: #0a7a2f;
+}
+
+.stopped {
+  color: #b00020;
+}
+
+.stopButton,
+.resumeButton {
+  min-height: 56px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.stopButton {
+  background: #b00020;
+}
+
+.resumeButton {
+  background: #0a7a2f;
+}
+
+.stopButton:disabled,
+.resumeButton:disabled {
+  background: #999999;
+}
