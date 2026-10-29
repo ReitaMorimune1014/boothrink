@@ -1,0 +1,77 @@
+/* タブレットは店頭に置き、少し離れたお客さんにも見えるように、文字とQRを大きくする */
+
+.screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  gap: 24px;
+  background: #ffffff;
+  color: #111111;
+  font-family: system-ui, sans-serif;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shopName {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.benefit {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+/* 画面の縦横の短い方に合わせて、できるだけ大きく表示する */
+.qr {
+  width: min(70vw, 60dvh);
+  height: auto;
+}
+
+.message {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.issued {
+  margin: 0;
+  font-size: 4rem;
+  font-weight: bold;
+  color: #0a7a2f;
+}
+
+.passwordForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(100%, 360px);
+  font-size: 1.25rem;
+}
+
+.passwordForm input,
+.passwordForm button {
+  font-size: 1.25rem;
+  padding: 12px;
+}
+
+.errorText {
+  margin: 0;
+  color: #b00020;
+}

@@ -38,20 +38,26 @@ export async function createClaim(shop: Shop): Promise<CreateClaimResult> {
   return { ok: true, token };
 }
 
-export type ClaimStatus = "waiting" | "claimed" | "expired";
+export type ClaimStatus = "waiting" | "claimed" | "expired" | "stopped";
 
-// タブレットが2秒ごとに呼ぶ。「まだ読まれていない／読まれた／期限切れ」を返す
-export async function getClaimStatus(token: string): Promise<ClaimStatus> {
+// タブレットが2秒ごとに呼ぶ。「まだ読まれていない／読まれた／期限切れ／受付停止中」を返す。
+// shop はタブレットの店。受付停止になったら、QRを隠せるように知らせる。
+export async function getClaimStatus(token: string, shop: Shop): Promise<ClaimStatus> {
   const redis = getRedis();
 
-  // 2つのキーを1回のコマンド（MGET）で読む。2秒ごとに呼ばれるので、コマンド数を節約する
-  const [ticketId, claim] = await redis.mget<[string | null, ClaimData | null]>(
+  // 3つのキーを1回のコマンド（MGET）で読む。2秒ごとに呼ばれるので、コマンド数を節約する
+  const [ticketId, claim, stopped] = await redis.mget<[string | null, ClaimData | null, string | null]>(
     claimedKey(token),
     claimKey(token),
+    stopKey(shop),
   );
 
+  // 読み込まれたことは、受付停止よりも優先して知らせる（「発行しました ✓」を出すため）
   if (ticketId) {
     return "claimed";
+  }
+  if (stopped) {
+    return "stopped";
   }
   if (claim) {
     return "waiting";

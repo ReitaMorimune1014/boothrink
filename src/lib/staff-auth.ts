@@ -1,8 +1,10 @@
 import { createHash, timingSafeEqual } from "node:crypto";
+import { STAFF_PASSWORD_HEADER } from "@/lib/staff-auth-header";
 
 // 店員用API（タブレット・管理画面）のパスワード確認。
 // タブレットは毎回 `x-staff-password` ヘッダーにパスワードをつけてAPIを呼ぶ。
-export const STAFF_PASSWORD_HEADER = "x-staff-password";
+// テストやAPIのファイルが今まで通り staff-auth から import できるよう、ここからも出しておく
+export { STAFF_PASSWORD_HEADER };
 
 // 文字列を同じ長さ（32バイト）のハッシュにする。
 // timingSafeEqual は長さが違うとエラーになるので、先にそろえてから比べる。

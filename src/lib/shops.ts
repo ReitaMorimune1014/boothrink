@@ -17,3 +17,15 @@ export function partnerShop(shop: Shop): Shop {
   }
   return "ando";
 }
+
+// 画面に出す店の名前
+export const SHOP_NAMES: Record<Shop, string> = {
+  ando: "安藤ゼミ（たこ焼き）",
+  hayashi: "林ゼミ（唐揚げ）",
+};
+
+// チケットを「使う店」ごとの特典。hayashi で使えば唐揚げ＋1個、ando で使えばたこ焼き＋2個
+export const BENEFITS: Record<Shop, string> = {
+  ando: "たこ焼き＋2個",
+  hayashi: "唐揚げ＋1個",
+};
