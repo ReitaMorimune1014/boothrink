@@ -41,15 +41,30 @@ describe("createClaim", () => {
 
 describe("getClaimStatus", () => {
   it("作っただけなら waiting → 交換されたら claimed", async () => {
-    const token = await newToken();
-    expect(await getClaimStatus(token)).toBe("waiting");
+    const token = await newToken("ando");
+    expect(await getClaimStatus(token, "ando")).toBe("waiting");
 
     await redeemClaim(token);
-    expect(await getClaimStatus(token)).toBe("claimed");
+    expect(await getClaimStatus(token, "ando")).toBe("claimed");
   });
 
   it("存在しない引換券は expired", async () => {
-    expect(await getClaimStatus(crypto.randomUUID())).toBe("expired");
+    expect(await getClaimStatus(crypto.randomUUID(), "ando")).toBe("expired");
+  });
+
+  it("QRを表示している間に受付停止になったら stopped", async () => {
+    const token = await newToken("ando");
+    await getRedis().set(stopKey("ando"), "1");
+
+    expect(await getClaimStatus(token, "ando")).toBe("stopped");
+  });
+
+  it("読み込まれたあとに受付停止になっても、claimed を優先する", async () => {
+    const token = await newToken("ando");
+    await redeemClaim(token);
+    await getRedis().set(stopKey("ando"), "1");
+
+    expect(await getClaimStatus(token, "ando")).toBe("claimed");
   });
 });
 

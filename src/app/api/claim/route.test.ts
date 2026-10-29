@@ -22,12 +22,12 @@ function jsonRequest(url: string, body: unknown, password?: string): Request {
   return new Request(`http://localhost${url}`, { method: "POST", headers, body: JSON.stringify(body) });
 }
 
-function statusRequest(token: string, password?: string): Request {
+function statusRequest(token: string, password?: string, shop = "ando"): Request {
   const headers = new Headers();
   if (password !== undefined) {
     headers.set(STAFF_PASSWORD_HEADER, password);
   }
-  return new Request(`http://localhost/api/claim/status?token=${encodeURIComponent(token)}`, { headers });
+  return new Request(`http://localhost/api/claim/status?token=${encodeURIComponent(token)}&shop=${shop}`, { headers });
 }
 
 async function createToken(): Promise<string> {
@@ -84,6 +84,11 @@ describe("GET /api/claim/status", () => {
 
   it("token の形がおかしいと 400", async () => {
     expect((await status(statusRequest("abc", STAFF_PASSWORD))).status).toBe(400);
+  });
+
+  it("知らない店は 400", async () => {
+    const token = await createToken();
+    expect((await status(statusRequest(token, STAFF_PASSWORD, "tanaka"))).status).toBe(400);
   });
 
   it("waiting → claimed と変わる。キャッシュさせない", async () => {
