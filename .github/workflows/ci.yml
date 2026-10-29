@@ -1,9 +1,9 @@
 name: CI
 
-# main へのPRと、main への push（マージ）のたびに動かす
+# すべてのPRと、main への push（マージ）のたびに動かす。
+# PR の向き先を main に限らないのは、前のステップのブランチに向けて積み重ねたPR（stacked PR）でも CI を動かすため
 on:
   pull_request:
-    branches: [main]
   push:
     branches: [main]
 
