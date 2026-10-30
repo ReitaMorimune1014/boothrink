@@ -106,3 +106,36 @@
 .resumeButton:disabled {
   background: #999999;
 }
+
+/* 数のリセット。よく使うボタンではないので、目立たない枠線だけのボタンにする */
+.resetArea {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #cccccc;
+}
+
+.resetNote {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #555555;
+}
+
+.resetButton {
+  min-height: 48px;
+  border: 2px solid #b00020;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #b00020;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.resetButton:disabled {
+  border-color: #999999;
+  color: #999999;
+}
