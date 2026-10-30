@@ -40,3 +40,15 @@ export async function postStop(password: string, shop: Shop, stopped: boolean): 
     return null;
   }
 }
+
+export async function postResetCounts(password: string): Promise<AdminApiResult> {
+  try {
+    const response = await fetch("/api/admin/reset-counts", {
+      method: "POST",
+      headers: { [STAFF_PASSWORD_HEADER]: password },
+    });
+    return await toResult(response);
+  } catch {
+    return null;
+  }
+}

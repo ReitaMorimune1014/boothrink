@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { GET as stats } from "@/app/api/admin/stats/route";
+import { POST as resetCounts } from "@/app/api/admin/reset-counts/route";
 import { POST as stop } from "@/app/api/admin/stop/route";
 import { STAFF_PASSWORD_HEADER } from "@/lib/staff-auth";
 import { resetRedis } from "../../../../test/redis-helpers";
@@ -61,5 +62,25 @@ describe("POST /api/admin/stop", () => {
 
     const resumed = await stop(stopRequest({ shop: "ando", stopped: false }, STAFF_PASSWORD));
     expect(await resumed.json()).toMatchObject({ shops: { ando: { stopped: false } } });
+  });
+});
+
+describe("POST /api/admin/reset-counts", () => {
+  function resetRequest(password?: string): Request {
+    const headers = new Headers();
+    if (password !== undefined) {
+      headers.set(STAFF_PASSWORD_HEADER, password);
+    }
+    return new Request("http://localhost/api/admin/reset-counts", { method: "POST", headers });
+  }
+
+  it("パスワードがないと 401（お客さんが数を消せないこと）", async () => {
+    expect((await resetCounts(resetRequest())).status).toBe(401);
+  });
+
+  it("戻したあとの集計を返す", async () => {
+    const response = await resetCounts(resetRequest(STAFF_PASSWORD));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ shops: { ando: { issued: 0, used: 0 } } });
   });
 });

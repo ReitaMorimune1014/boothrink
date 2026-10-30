@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { getTodayStats, setStopped } from "@/lib/admin";
+import { getTodayStats, resetTodayCounts, setStopped } from "@/lib/admin";
 import { stopKey } from "@/lib/keys";
 import { getRedis } from "@/lib/redis";
 import { getTicket, markTicketUsed } from "@/lib/ticket";
@@ -73,5 +73,63 @@ describe("setStopped", () => {
     const ttl = await getRedis().ttl(stopKey("ando"));
     expect(ttl).toBeGreaterThan(0);
     expect(ttl).toBeLessThanOrEqual(24 * 60 * 60);
+  });
+});
+
+describe("resetTodayCounts", () => {
+  it("今日の発行数・使用数を両店とも0に戻す", async () => {
+    const now = new Date("2026-11-01T12:00:00+09:00");
+    const id = await issueTicket("ando", now);
+    await issueTicket("hayashi", now);
+    await markTicketUsed(id, now);
+
+    await resetTodayCounts(now);
+
+    const stats = await getTodayStats(now);
+    expect(stats.shops.ando).toMatchObject({ issued: 0, used: 0 });
+    expect(stats.shops.hayashi).toMatchObject({ issued: 0, used: 0 });
+  });
+
+  it("チケットは消さない。未使用は使えるし、使用済みは使用済みのまま", async () => {
+    const now = new Date();
+    const unusedId = await issueTicket("ando", now);
+    const usedId = await issueTicket("ando", now);
+    await markTicketUsed(usedId, now);
+
+    await resetTodayCounts(now);
+
+    expect((await getTicket(usedId)).status).toBe("used");
+    expect((await markTicketUsed(usedId, now)).ok).toBe(false);
+    expect((await getTicket(unusedId)).status).toBe("unused");
+    // リセットしたあとに使った分は、0から数え直す
+    expect((await markTicketUsed(unusedId, now)).ok).toBe(true);
+    expect((await getTodayStats(now)).shops.hayashi.used).toBe(1);
+  });
+
+  it("受付停止の状態は変えない", async () => {
+    await setStopped("ando", true);
+    await resetTodayCounts();
+
+    expect((await getTodayStats()).shops.ando.stopped).toBe(true);
+  });
+
+  it("別の日の数は消さない", async () => {
+    const yesterday = new Date("2026-11-01T12:00:00+09:00");
+    await issueTicket("ando", yesterday);
+
+    await resetTodayCounts(new Date("2026-11-02T12:00:00+09:00"));
+
+    expect((await getTodayStats(yesterday)).shops.ando.issued).toBe(1);
+  });
+
+  it("リセットと発行が同時に起きても、数が壊れない（0 か 1 のどちらかになる）", async () => {
+    const now = new Date();
+    await issueTicket("ando", now);
+
+    // 発行（INCR）とリセット（DEL）を同時に走らせる。どちらが先かで結果は変わるが、
+    // 数が負になったり、2以上になったりはしない
+    await Promise.all([issueTicket("ando", now), resetTodayCounts(now)]);
+
+    expect([0, 1]).toContain((await getTodayStats(now)).shops.ando.issued);
   });
 });

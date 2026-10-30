@@ -63,3 +63,20 @@ export async function setStopped(shop: Shop, stopped: boolean, now: Date = new D
     await redis.del(stopKey(shop));
   }
 }
+
+// 今日の発行数・使用数を、両店とも0に戻す（リハーサルや負荷テストのあとに使う）。
+//
+// 消すのは「数」だけで、チケットそのもの（mogiten:ticket / mogiten:used）は消さない。
+// すでに配ったチケットは、リセットしたあとも使えるし、使用済みのチケットは使用済みのまま。
+//
+// 4つのキーを DEL 1回でまとめて消す。DEL は1つのコマンドなので、途中で止まって一部だけ0になることはない
+export async function resetTodayCounts(now: Date = new Date()): Promise<void> {
+  const redis = getRedis();
+  const date = jstDateString(now);
+  await redis.del(
+    countKey(date, "ando", "issued"),
+    countKey(date, "ando", "used"),
+    countKey(date, "hayashi", "issued"),
+    countKey(date, "hayashi", "used"),
+  );
+}
