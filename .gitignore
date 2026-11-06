@@ -24,3 +24,7 @@ npm-debug.log*
 
 # ローカルで redis-server を動かしたときにできるデータファイル
 dump.rdb
+
+# next dev が起動のたびに自動生成するAIエージェント向けの説明ファイル
+# Why: 人が書いたものではなく、Next.js のバージョンで中身が変わる生成物のため管理しない
+AGENTS.md
