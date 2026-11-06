@@ -1,0 +1,9 @@
+<!-- 仮のイラスト（取っ手のみ・3時の向き）。軸穴の中心は (30, 30) = 幅の12.5%・高さの50%。
+     持ち手の中心は (210, 30) なので、軸から持ち手までは幅の75%。style.css の handle 系の変数と対応 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60">
+  <g stroke="#4a2511" stroke-width="5" stroke-linejoin="round">
+    <rect x="8" y="14" width="220" height="32" rx="8" fill="#f2d7a0"/>
+    <circle cx="30" cy="30" r="9" fill="#c99a5b"/>
+    <circle cx="210" cy="30" r="16" fill="#e60033"/>
+  </g>
+</svg>

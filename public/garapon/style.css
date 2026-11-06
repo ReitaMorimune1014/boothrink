@@ -1,0 +1,230 @@
+/*
+  ガラポンの回し方ページ
+  - 屋台のパソコン1台に全画面で表示する前提なので、メディアクエリは使わない
+  - 大きさは vh（画面の高さに対する割合）で決め、解像度が多少違っても1画面に収める
+*/
+
+:root {
+  /* 色 */
+  --color-red: #e60033;
+  --color-red-dark: #b8002a;
+  --color-white: #ffffff;
+  --color-yellow: #ffe14d;
+
+  /*
+    揺れの速さ（1往復の時間）。ゆりかごと取っ手で同じ値を使う。
+    Why: 同じ周期で動かすことで「ゆりかご＝取っ手の動き」と結びつけるため。
+    当日は script.js から URL の ?duration= で上書きできる。
+  */
+  --swing-duration: 2s;
+
+  /* 取っ手が往復する角度（3時の向きを 0° とした時計回りの角度） */
+  --angle-2oclock: -30deg;
+  --angle-6oclock: 90deg;
+
+  /* ガラポン全体の大きさ（本体画像の幅＝高さ） */
+  --garapon-size: 52vh;
+
+  /*
+    本体画像の中の「軸の中心」の位置（画像の左上からの割合）。
+    画像を差し替えたら、ここを測り直す。
+  */
+  --axle-x: 60%;
+  --axle-y: 46.25%;
+
+  /*
+    取っ手画像の大きさと「軸穴の中心」の位置。
+    --handle-width: 本体に対する取っ手の長さ
+    --handle-pivot-x / y: 取っ手画像の中の軸穴の位置（画像の幅・高さに対する割合）
+    --handle-reach: 軸穴から持ち手までの長さ（目印をこの距離に置く）
+  */
+  --handle-width: calc(var(--garapon-size) * 0.6);
+  --handle-pivot-x: 0.125;
+  --handle-pivot-y: 0.5;
+  --handle-reach: calc(var(--handle-width) * 0.75);
+
+  /*
+    ゆりかごの回転の中心。底のカーブ（円の一部）の「円の中心」に合わせる。
+    Why: カーブの中心で回すと、底が床の上を転がるように動き、本物のゆりかごに見える。
+         底の真ん中で回すと、片側が浮いて倒れそうな動きになる。
+  */
+  --cradle-size: 46vh;
+  --cradle-origin: 50% 39.75%;
+  --cradle-angle: 10deg;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--color-red);
+  color: var(--color-white);
+  font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", "Meiryo", sans-serif;
+  /* Why: 全画面で流しっぱなしにするので、マウスカーソルを画面に出さない */
+  cursor: none;
+  /* Why: 1画面に収める前提。はみ出してもスクロールバーを出さない */
+  overflow: hidden;
+}
+
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 2vh 4vh;
+}
+
+.title {
+  margin: 0;
+  font-size: 7vh;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0.6vh 0 var(--color-red-dark);
+}
+
+.lead {
+  margin: 0;
+  padding: 1.5vh 4vh;
+  border-radius: 999px;
+  background: var(--color-white);
+  color: var(--color-red);
+  font-size: 4.4vh;
+  font-weight: bold;
+}
+
+.lead strong {
+  font-size: 1.3em;
+}
+
+/* ---------- 左右に並べる部分 ---------- */
+
+.stage {
+  display: flex;
+  align-items: center;
+  gap: 4vh;
+}
+
+.scene {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vh;
+}
+
+.caption {
+  font-size: 3.4vh;
+  font-weight: bold;
+}
+
+.equals {
+  margin: 0;
+  font-size: 10vh;
+  font-weight: bold;
+}
+
+/* ---------- ゆりかご ---------- */
+
+.cradle-box {
+  width: var(--cradle-size);
+  height: var(--cradle-size);
+}
+
+.cradle {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: var(--cradle-origin);
+  animation: cradle-swing var(--swing-duration) ease-in-out infinite;
+}
+
+/*
+  取っ手が 2時（上）にあるとき左に、6時（下）にあるとき右に傾く。
+  Why: 取っ手と同じタイミングで端に着くようにして、動きの対応を見て分かるようにする。
+*/
+@keyframes cradle-swing {
+  0%,
+  100% {
+    transform: rotate(calc(var(--cradle-angle) * -1));
+  }
+  50% {
+    transform: rotate(var(--cradle-angle));
+  }
+}
+
+/* ---------- ガラポン ---------- */
+
+.garapon {
+  position: relative;
+  /* Why: 6時の目印が画像の下にはみ出すので、説明文と重ならないよう下に余白をとる */
+  margin-bottom: 5vh;
+  width: var(--garapon-size);
+  height: var(--garapon-size);
+}
+
+.garapon-body {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 軸の位置に置いた「大きさ0の点」。この点を中心に取っ手を回す */
+.handle-arm {
+  position: absolute;
+  left: var(--axle-x);
+  top: var(--axle-y);
+  width: 0;
+  height: 0;
+  animation: handle-swing var(--swing-duration) ease-in-out infinite;
+}
+
+/*
+  取っ手画像を、軸穴の中心がちょうど handle-arm の点に重なるようにずらす。
+  Why: 画像の左上ではなく軸穴を基準に置くことで、回転しても軸から外れない。
+*/
+.handle {
+  position: absolute;
+  width: var(--handle-width);
+  left: calc(var(--handle-width) * var(--handle-pivot-x) * -1);
+  top: 0;
+  transform: translateY(calc(var(--handle-pivot-y) * -100%));
+}
+
+@keyframes handle-swing {
+  0%,
+  100% {
+    transform: rotate(var(--angle-2oclock));
+  }
+  50% {
+    transform: rotate(var(--angle-6oclock));
+  }
+}
+
+/*
+  2時・6時の目印。軸から持ち手までの距離だけ離した位置に置く。
+  rotate → translateX で円周上の位置に移動し、逆向きに rotate して文字をまっすぐに戻す。
+*/
+.marker {
+  position: absolute;
+  /* Why: 取っ手が端に来ても、目印の文字が隠れないように手前に出す */
+  z-index: 1;
+  left: var(--axle-x);
+  top: var(--axle-y);
+  padding: 0.4vh 1.2vh;
+  border: 0.4vh solid var(--color-red);
+  border-radius: 999px;
+  background: var(--color-yellow);
+  color: var(--color-red);
+  font-size: 2.8vh;
+  font-weight: bold;
+  white-space: nowrap;
+  transform: rotate(var(--marker-angle)) translateX(calc(var(--handle-reach) + 5vh))
+    rotate(calc(var(--marker-angle) * -1)) translate(-50%, -50%);
+}

@@ -1,0 +1,13 @@
+<!-- 仮のイラスト（ガラポン本体・取っ手なし）。ChatGPTの画像ができたら差し替える。
+     軸の中心は (240, 185) = 幅の60%・高さの46.25%。style.css の axle-x・axle-y 変数と対応 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <g stroke="#4a2511" stroke-width="6" stroke-linejoin="round">
+    <polygon points="142,40 258,40 340,112 340,228 258,300 142,300 60,228 60,112" fill="#f2d7a0"/>
+    <circle cx="200" cy="170" r="34" fill="#e60033"/>
+    <rect x="30" y="320" width="230" height="40" rx="4" fill="#e9c88a"/>
+    <rect x="20" y="355" width="360" height="22" rx="4" fill="#e9c88a"/>
+    <rect x="225" y="160" width="30" height="210" rx="4" fill="#f2d7a0"/>
+    <circle cx="240" cy="185" r="9" fill="#e9c88a"/>
+  </g>
+  <text x="80" y="90" font-size="28" font-weight="bold" fill="#4a2511">仮</text>
+</svg>

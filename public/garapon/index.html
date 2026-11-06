@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ガチャたこ焼き ガラポンの回し方</title>
+    <!--
+      外部ファイル（フォント・CDN）は読み込まない。
+      Why: 屋台のネットが不安定でも、このフォルダだけで表示できるようにするため。
+    -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <h1 class="title">ゆりかごみたいに ゆらゆら回してね</h1>
+
+      <div class="stage">
+        <!-- 左: タコの赤ちゃんのゆりかご（見立て） -->
+        <figure class="scene">
+          <div class="cradle-box">
+            <img class="cradle" src="images/cradle.svg" alt="ゆりかごで眠るタコの赤ちゃん" />
+          </div>
+          <figcaption class="caption">タコの赤ちゃんを ゆらすように…</figcaption>
+        </figure>
+
+        <p class="equals" aria-hidden="true">＝</p>
+
+        <!-- 右: ガラポン本体と、2時⇄6時で揺れる取っ手 -->
+        <figure class="scene">
+          <div class="garapon">
+            <img class="garapon-body" src="images/body.svg" alt="ガラポン" />
+
+            <!-- 取っ手が往復する端（2時と6時）の目印 -->
+            <span class="marker" style="--marker-angle: -30deg">2時</span>
+            <span class="marker" style="--marker-angle: 90deg">6時</span>
+
+            <!--
+              handle-arm は「軸の位置にある大きさ0の点」。この点を回転させる。
+              Why: 回転の中心を軸に固定しておけば、取っ手の画像を差し替えても
+                   画像内の軸穴の位置（CSS変数）を直すだけで済む。
+            -->
+            <div class="handle-arm">
+              <img class="handle" src="images/handle.svg" alt="" />
+            </div>
+          </div>
+          <figcaption class="caption">取っ手を 2時 ↔ 6時 で往復</figcaption>
+        </figure>
+      </div>
+
+      <p class="lead">
+        取っ手を <strong>2時</strong> から <strong>6時</strong> まで ゆらゆら動かすと、玉が出てくるよ
+      </p>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
