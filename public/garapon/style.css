@@ -142,7 +142,11 @@ body {
 
 .stage {
   display: flex;
-  align-items: center;
+  /*
+    左（ゆりかご）と右（ガラポン）を下そろえにする。
+    Why: 2つの説明文（「タコの赤ちゃんを…」「取っ手を…」）の高さをそろえ、横に並べて読めるようにするため。
+  */
+  align-items: flex-end;
   gap: 4vh;
 }
 
@@ -157,13 +161,16 @@ body {
 .caption {
   font-size: 3.2vh;
   font-weight: bold;
+  line-height: 1.4; /* 2つの説明文の行の高さをそろえる（⇔ の絵が入っても高さが変わらないように） */
 }
 
+/* 円の矢印の先がガラポンの枠の下にはみ出すので、そのぶん文字を下げる */
 .caption-garapon {
-  margin-top: 2vh;
+  margin-top: 3.5vh;
 }
 
 .equals {
+  align-self: center; /* 「＝」だけは上下の真ん中に置く */
   margin: 0;
   color: var(--color-red);
   font-size: 9vh;
@@ -392,6 +399,7 @@ body {
 /* 文章の中に置く小さい ⇔ */
 .arrow-icon {
   width: 1.8em;
+  height: 0.9em;
   vertical-align: middle;
 }
 
