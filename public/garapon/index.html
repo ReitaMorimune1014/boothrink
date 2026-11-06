@@ -52,13 +52,38 @@
               <span class="drop-ball ball-red" aria-hidden="true"></span>
 
               <!--
-                取っ手が往復する範囲の、ちょうど真ん中の外側に「⇔」を置く。
-                Why: 「2時・6時」は時計に例えた言い方で、お客さんには伝わりにくい。
-                     矢印なら「この範囲を行ったり来たり」が見ただけで分かる。
-                ⇔ を文字で書くと、フォントによって太さや形が変わるので、同じ形を SVG で描いている。
+                取っ手が動く範囲を、円をえがく両向きの矢印で表す。
+                Why: まっすぐな ⇔ では「どこからどこまで動かすか」が伝わりにくい。
+                     取っ手と同じ円の上に矢印を引けば、動かす幅と向きがそのまま分かる。
+
+                座標は .garapon の大きさを 100 とした値（viewBox="0 0 100 100"）。
+                  - 円の中心: 軸の位置（62.53, 46.3）
+                  - 半径: 53（取っ手の画像の先の端は軸から約 51。それより外側に引いて重ならないようにする）
+                  - 始まり: 取っ手の上の端（-10°）→ (114.72, 37.10)
+                  - 終わり: 取っ手の下の端（90°）  → (62.53, 99.30)
+                  - A 53 53 0 0 1 … 半径53の円で、時計回りに、短いほうの弧を通る
+                角度を変えたときは、この2点も計算し直す（x = 62.53 + 53 × cos角度、y = 46.3 + 53 × sin角度）。
               -->
-              <svg class="swing-mark" viewBox="0 0 120 60" aria-hidden="true">
-                <path d="M30 22 H90 M30 38 H90 M42 8 L12 30 L42 52 M78 8 L108 30 L78 52" />
+              <svg class="swing-arc" viewBox="0 0 100 100" aria-hidden="true">
+                <defs>
+                  <!-- 矢印の先。orient="auto-start-reverse" で、始まり側は逆向きにして両向きにする -->
+                  <marker
+                    id="swing-arrow-head"
+                    viewBox="0 0 10 10"
+                    refX="5"
+                    refY="5"
+                    markerWidth="3.2"
+                    markerHeight="3.2"
+                    orient="auto-start-reverse"
+                  >
+                    <path d="M0 0 L10 5 L0 10 Z" />
+                  </marker>
+                </defs>
+                <path
+                  d="M114.72 37.10 A53 53 0 0 1 62.53 99.30"
+                  marker-start="url(#swing-arrow-head)"
+                  marker-end="url(#swing-arrow-head)"
+                />
               </svg>
 
               <!--
@@ -70,7 +95,8 @@
                 <img class="handle" src="images/handle.png" alt="" />
               </div>
             </div>
-            <figcaption class="caption">
+            <!-- 円の矢印の先がガラポンの枠の下にはみ出すので、文字と重ならないよう少し下げる -->
+            <figcaption class="caption caption-garapon">
               取っ手を
               <svg class="arrow-icon" viewBox="0 0 120 60" aria-hidden="true">
                 <path d="M30 22 H90 M30 38 H90 M42 8 L12 30 L42 52 M78 8 L108 30 L78 52" />

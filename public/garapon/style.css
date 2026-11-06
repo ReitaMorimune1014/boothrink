@@ -49,7 +49,7 @@
     取っ手画像の大きさと「軸穴の中心」の位置。
     --handle-width: 本体に対する取っ手の長さ
     --handle-pivot-x / y: 取っ手画像の中の軸穴の位置（画像の幅・高さに対する割合）
-    --handle-reach: 軸穴から持ち手までの長さ（⇔ をこの距離より外に置く）
+    --handle-reach: 軸穴から持ち手までの長さ（円の矢印はこの長さより外側に引く）
   */
   --handle-width: calc(var(--garapon-size) * 0.6);
   --handle-pivot-x: 0.155;
@@ -157,6 +157,10 @@ body {
 .caption {
   font-size: 3.2vh;
   font-weight: bold;
+}
+
+.caption-garapon {
+  margin-top: 2vh;
 }
 
 .equals {
@@ -353,31 +357,30 @@ body {
 }
 
 /*
-  取っ手が動く範囲を表す「⇔」。
-  - 置く角度: 往復の真ん中（-10deg と 90deg の真ん中 = 40deg）
-  - 置く距離: 持ち手より少し外側（取っ手と重ならないように）
-  - 向き: 円の接線の向きにして、矢印が取っ手の動く方向を指すようにする
-
-  transform は左から順に、軸の点（transform-origin: 0 0）を基準に次のように動く。
-    1. rotate(40deg)     … 軸から外へ向かう線を、往復の真ん中の向きにする
-    2. translateX(距離)  … その線に沿って、持ち手より外側まで移動する
-    3. rotate(90deg)     … 外向きから90°回すと、円の接線（取っ手が動く向き）になる
-    4. translate(-50%, -50%) … 矢印の中心がその点に来るようにずらす
+  取っ手が動く範囲を表す、円をえがく両向きの矢印。
+  .garapon と同じ大きさに重ね、はみ出した部分（右側）も表示する。
 */
-.swing-mark {
-  --mark-angle: calc((var(--angle-start) + var(--angle-end)) / 2);
+.swing-arc {
   position: absolute;
-  z-index: 3;
-  left: var(--axle-x);
-  top: var(--axle-y);
-  width: 9vh;
-  transform-origin: 0 0;
-  transform: rotate(var(--mark-angle)) translateX(calc(var(--handle-reach) + 7vh))
-    rotate(90deg) translate(-50%, -50%);
+  inset: 0;
+  z-index: 4; /* Why: 取っ手が端に来ても、矢印の先が取っ手に隠れないように、取っ手より手前に描く */
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-/* ⇔ の線の太さと色。.swing-mark と .arrow-icon で共通 */
-.swing-mark path,
+.swing-arc > path {
+  fill: none;
+  stroke: var(--color-red);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.swing-arc marker path {
+  fill: var(--color-red);
+}
+
+/* 文章の中の小さい ⇔ の線の太さと色 */
 .arrow-icon path {
   fill: none;
   stroke: var(--color-red);
