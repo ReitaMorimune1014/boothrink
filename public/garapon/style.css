@@ -22,9 +22,10 @@
 
   /*
     取っ手が往復する角度（3時の向きを 0° とした時計回りの角度）。
-    -30deg が時計の2時、90deg が6時の向き。画面には出さない、コードの中だけの基準。
+    -10deg が時計の2時40分（短針の位置）、90deg が6時の向き。画面には出さない、コードの中だけの基準。
+    （2時40分の短針は 12時から 2.67時間 × 30° = 80°。3時を 0° にすると 80° − 90° = −10°）
   */
-  --angle-start: -30deg;
+  --angle-start: -10deg;
   --angle-end: 90deg;
 
   /*
@@ -57,19 +58,15 @@
 
   /*
     ゆりかごの回転の中心。底のカーブ（円の一部）の「円の中心」に合わせる。
-    Why: カーブの中心で回すと、底が床の上を転がるように動き、本物のゆりかごに見える。
-         底の真ん中で回すと、片側が浮いて倒れそうな動きになる。
+    Why: カーブの中心で回すと、底のいちばん下の点がいつも同じ高さに来るので、
+         床がなくても、その場で転がるように揺れて見える。
   */
   --cradle-size: 40vh;
   --cradle-origin: 50% 46.1%;
   --cradle-angle: 10deg;
 
-  /*
-    ゆりかごの床の高さ（揺り木のいちばん下の位置）。画像の高さに対する割合。
-    Why: もとの画像の床の板ごと揺らすと床まで傾いて不自然なので、床は画像から消し、
-         CSS で描いた動かない床を、揺り木が触れる高さに置く。
-  */
-  --cradle-floor-y: 88.7%;
+  /* ドラムの下から出てくる玉の大きさ（ガラポン全体に対する割合） */
+  --drop-ball-size: calc(var(--garapon-size) * 0.065);
 }
 
 * {
@@ -158,26 +155,16 @@ body {
 /* ---------- ゆりかご ---------- */
 
 .cradle-box {
-  position: relative;
   width: var(--cradle-size);
   height: var(--cradle-size);
 }
 
-/* 動かない床。ゆりかごの画像より奥に描く */
-.cradle-box::before {
-  content: "";
-  position: absolute;
-  left: 4%;
-  right: 4%;
-  top: var(--cradle-floor-y);
-  height: 4%;
-  border: 0.5vh solid var(--color-text);
-  border-radius: 1vh;
-  background: #f2d7a0;
-}
-
+/*
+  動かない床は置かない。
+  Why: 床を CSS で描いていたが、ゆりかごが傾くと画像のすき間から床が見えてしまい、
+       「動かないゆりかごの一部」が残っているように見えたため。
+*/
 .cradle {
-  position: relative;
   display: block;
   width: 100%;
   height: 100%;
@@ -228,6 +215,80 @@ body {
 }
 
 /*
+  ドラムの下から出てくる玉。
+  - 出る場所: ドラムの下の端、柱の左側（土台の画像の座標で x=540, y=770）
+  - 落ちる先: 受け皿の中（x=400）。玉の下の端が受け皿の底の線（y=845）に乗る高さ。そのあと少し左へ転がって消える
+  受け皿の中は土台の画像で塗られているので、玉は土台より手前に描く。
+*/
+.drop-ball {
+  position: absolute;
+  z-index: 2;
+  width: var(--drop-ball-size);
+  height: var(--drop-ball-size);
+  border: 0.3vh solid var(--color-text);
+  border-radius: 50%;
+  opacity: 0;
+  translate: -50% -50%; /* left / top が玉の中心になるようにする */
+  /*
+    3往復で1周するアニメーションを、玉ごとに1往復ずつずらして始める。
+    Why: こうすると 1往復目は黒、2往復目は青、3往復目は赤…と、毎回ちがう色が順番に出る。
+         JS で数えなくても、取っ手と同じ --swing-duration を使うのでタイミングがずれない。
+  */
+  animation: ball-drop calc(var(--swing-duration) * 3) linear infinite backwards;
+}
+
+.drop-ball.ball-black {
+  animation-delay: 0s;
+}
+
+.drop-ball.ball-blue {
+  animation-delay: var(--swing-duration);
+}
+
+.drop-ball.ball-red {
+  animation-delay: calc(var(--swing-duration) * 2);
+}
+
+/*
+  3往復（100%）のうち、1往復は 33.3%。取っ手が下の端に着くのは往復の半分 = 16.7%。
+  その瞬間にドラムの下から出て、受け皿に落ち、少し転がって、その往復が終わる前に消える。
+*/
+@keyframes ball-drop {
+  0%,
+  16.6% {
+    left: 52.7%;
+    top: 75.2%;
+    opacity: 0;
+  }
+  17% {
+    left: 52.7%;
+    top: 75.2%;
+    opacity: 1;
+  }
+  22% {
+    left: 39%;
+    top: 79.2%;
+    animation-timing-function: ease-out;
+  }
+  24% {
+    left: 37%;
+    top: 77%; /* 受け皿で小さく跳ねる */
+    animation-timing-function: ease-in;
+  }
+  26% {
+    left: 35%;
+    top: 79.2%;
+    opacity: 1;
+  }
+  31%,
+  100% {
+    left: 29%;
+    top: 79.2%;
+    opacity: 0;
+  }
+}
+
+/*
   取っ手の角度から --angle-rest を引いた分だけ回す。
   Why: 取っ手と同じだけ回すことで、ドラムと取っ手が1つの物として動いて見える。
 */
@@ -244,7 +305,7 @@ body {
 /* 軸の位置に置いた「大きさ0の点」。この点を中心に取っ手を回す（土台より手前） */
 .handle-arm {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   left: var(--axle-x);
   top: var(--axle-y);
   width: 0;
@@ -276,12 +337,12 @@ body {
 
 /*
   取っ手が動く範囲を表す「⇔」。
-  - 置く角度: 往復の真ん中（-30deg と 90deg の真ん中 = 30deg）
+  - 置く角度: 往復の真ん中（-10deg と 90deg の真ん中 = 40deg）
   - 置く距離: 持ち手より少し外側（取っ手と重ならないように）
   - 向き: 円の接線の向きにして、矢印が取っ手の動く方向を指すようにする
 
   transform は左から順に、軸の点（transform-origin: 0 0）を基準に次のように動く。
-    1. rotate(30deg)     … 軸から外へ向かう線を、往復の真ん中の向きにする
+    1. rotate(40deg)     … 軸から外へ向かう線を、往復の真ん中の向きにする
     2. translateX(距離)  … その線に沿って、持ち手より外側まで移動する
     3. rotate(90deg)     … 外向きから90°回すと、円の接線（取っ手が動く向き）になる
     4. translate(-50%, -50%) … 矢印の中心がその点に来るようにずらす
@@ -289,7 +350,7 @@ body {
 .swing-mark {
   --mark-angle: calc((var(--angle-start) + var(--angle-end)) / 2);
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   left: var(--axle-x);
   top: var(--axle-y);
   width: 9vh;
