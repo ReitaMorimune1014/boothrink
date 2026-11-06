@@ -36,7 +36,7 @@
   --angle-rest: 30deg;
 
   /* ガラポン全体の大きさ（ドラム・土台の画像の幅＝高さ） */
-  --garapon-size: 46vh;
+  --garapon-size: 44vh;
 
   /*
     土台の画像の中の「軸の中心」の位置（画像の左上からの割合）。
@@ -61,7 +61,7 @@
     Why: カーブの中心で回すと、底のいちばん下の点がいつも同じ高さに来るので、
          床がなくても、その場で転がるように揺れて見える。
   */
-  --cradle-size: 40vh;
+  --cradle-size: 38vh;
   --cradle-origin: 50% 46.1%;
   --cradle-angle: 10deg;
 
@@ -110,7 +110,7 @@ body {
 .title {
   margin: 0;
   color: var(--color-red);
-  font-size: 6.4vh;
+  font-size: 7.6vh;
   letter-spacing: 0.1em;
 }
 
@@ -120,7 +120,7 @@ body {
 
 .lead {
   margin: 0;
-  font-size: 3.8vh;
+  font-size: 4.8vh;
   font-weight: bold;
   text-align: center;
 }
@@ -128,9 +128,9 @@ body {
 /* 出てこないときの注意書き。本文より小さく、赤で目に入るようにする */
 .note {
   display: block;
-  margin-top: 0.6vh;
+  margin-top: 1vh;
   color: var(--color-red);
-  font-size: 3vh;
+  font-size: 4vh;
 }
 
 /* ---------- 左右に並べる部分 ---------- */
@@ -138,7 +138,7 @@ body {
 .stage {
   display: flex;
   align-items: center;
-  gap: 4vh;
+  gap: 3vh;
 }
 
 .scene {
@@ -150,8 +150,10 @@ body {
 }
 
 .caption {
-  font-size: 3.2vh;
+  font-size: 4vh;
   font-weight: bold;
+  text-align: center;
+  white-space: nowrap; /* Why: 途中で改行されると読みにくいので、1行で表示する */
 }
 
 .equals {
@@ -199,6 +201,8 @@ body {
 
 .garapon {
   position: relative;
+  /* Why: ⇔ がガラポンの右にはみ出すので、右の特典の枠と重ならないように余白をとる */
+  margin-right: 8vh;
   width: var(--garapon-size);
   height: var(--garapon-size);
 }
@@ -404,22 +408,40 @@ body {
   padding: 0;
   list-style: none;
   display: flex;
-  gap: 6vh;
-  font-size: 3.6vh;
+  flex-direction: column; /* 縦に3つ並べる */
+  gap: 2.5vh;
+  font-size: 4.2vh;
   font-weight: bold;
 }
 
+/* 特典1つ分の枠。赤い枠線で囲み、1つずつのまとまりとして読めるようにする */
 .prize {
   display: flex;
   align-items: center;
-  gap: 1.2vh;
+  gap: 2vh;
+  padding: 1.6vh 3vh;
+  border: 0.6vh solid var(--color-red);
+  border-radius: 2vh;
+}
+
+/* 「赤」と「たこ焼き ＋2個」を2行に分ける。1行だと枠の横幅が広がりすぎるため */
+.prize-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+  white-space: nowrap; /* 「たこ焼き ＋2個」を途中で改行しない */
+}
+
+.prize-color {
+  font-size: 0.8em;
 }
 
 /* 玉の見本。色だけでなく「赤・青・黒」の文字も並べる（色の見分けが苦手な人にも伝わるように） */
 .ball {
-  width: 4.4vh;
-  height: 4.4vh;
-  border: 0.4vh solid var(--color-text);
+  flex-shrink: 0;
+  width: 6.5vh;
+  height: 6.5vh;
+  border: 0.5vh solid var(--color-text);
   border-radius: 50%;
 }
 

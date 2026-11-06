@@ -25,7 +25,8 @@
             <div class="cradle-box">
               <img class="cradle" src="images/cradle.png" alt="ゆりかごで眠るタコの赤ちゃん" />
             </div>
-            <figcaption class="caption">タコの赤ちゃんを ゆらすように…</figcaption>
+            <!-- 1行だと横に長く、右の特典の枠が画面からはみ出すので、区切りのよい所で2行にする -->
+            <figcaption class="caption">タコの赤ちゃんを<br />ゆらすように…</figcaption>
           </figure>
 
           <p class="equals" aria-hidden="true">＝</p>
@@ -78,6 +79,35 @@
               ゆらゆら往復
             </figcaption>
           </figure>
+
+          <!--
+            出た玉の色と特典。ガラポンの右に縦に3つ並べる。
+            Why: 下に横並びにすると、文字を大きくしたときに1行に収まらない。
+                 右に縦に置けば下が空くので、ほかの文字も大きくできる。
+          -->
+          <ul class="prizes" aria-label="玉の色と特典">
+            <li class="prize">
+              <span class="ball ball-red" aria-hidden="true"></span>
+              <span class="prize-text">
+                <span class="prize-color">赤</span>
+                <span>たこ焼き <strong class="accent">＋2個</strong></span>
+              </span>
+            </li>
+            <li class="prize">
+              <span class="ball ball-blue" aria-hidden="true"></span>
+              <span class="prize-text">
+                <span class="prize-color">青</span>
+                <span>たこ焼き <strong class="accent">＋1個</strong></span>
+              </span>
+            </li>
+            <li class="prize">
+              <span class="ball ball-black" aria-hidden="true"></span>
+              <span class="prize-text">
+                <span class="prize-color">黒</span>
+                <span>はずれ</span>
+              </span>
+            </li>
+          </ul>
         </div>
 
         <p class="lead">
@@ -89,21 +119,6 @@
           <span class="note">※ 出てこないときは、1周回してみてね！</span>
         </p>
 
-        <!-- 出た玉の色と特典 -->
-        <ul class="prizes" aria-label="玉の色と特典">
-          <li class="prize">
-            <span class="ball ball-red" aria-hidden="true"></span>
-            <span>赤 … たこ焼き <strong class="accent">＋2個</strong></span>
-          </li>
-          <li class="prize">
-            <span class="ball ball-blue" aria-hidden="true"></span>
-            <span>青 … たこ焼き <strong class="accent">＋1個</strong></span>
-          </li>
-          <li class="prize">
-            <span class="ball ball-black" aria-hidden="true"></span>
-            <span>黒 … はずれ</span>
-          </li>
-        </ul>
       </div>
     </main>
 
