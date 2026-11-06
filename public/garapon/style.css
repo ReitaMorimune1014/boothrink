@@ -180,6 +180,7 @@ body {
 /* ---------- ゆりかご ---------- */
 
 .cradle-box {
+  position: relative; /* 「Z z z」をこの枠の中の位置で置くため */
   width: var(--cradle-size);
   height: var(--cradle-size);
 }
@@ -195,6 +196,56 @@ body {
   height: 100%;
   transform-origin: var(--cradle-origin);
   animation: cradle-swing var(--swing-duration) ease-in-out infinite;
+}
+
+/*
+  寝息の「Z z z」。
+  - 出る場所: タコの頭の右上（ゆりかごの画像の中で x=70%, y=22% あたり）
+  - 動き: 小さく出て、右上へ浮かびながら大きくなり、消える
+  3文字は同じ動きを1秒ずつずらして始め、次々に出てくるように見せる。
+*/
+.zzz {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.zzz-letter {
+  position: absolute;
+  left: 70%;
+  top: 22%;
+  color: var(--color-text);
+  font-size: 4.5vh;
+  font-weight: bold;
+  opacity: 0;
+  animation: zzz-float 3s ease-out infinite;
+}
+
+.zzz-letter:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.zzz-letter:nth-child(3) {
+  animation-delay: 2s;
+}
+
+@keyframes zzz-float {
+  0% {
+    translate: 0 0;
+    scale: 0.5;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    translate: 4vh -9vh;
+    scale: 1.2;
+    opacity: 0;
+  }
 }
 
 /*
