@@ -2,7 +2,6 @@
   ガラポンの回し方ページ
   - 屋台のパソコン1台に全画面で表示する前提なので、メディアクエリは使わない
   - 大きさは vh（画面の高さに対する割合）で決め、解像度が多少違っても1画面に収める
-  - 文字は、少し離れた所からでも読めるよう、レイアウトが崩れない範囲で大きめにしている
 */
 
 :root {
@@ -111,7 +110,7 @@ body {
 .title {
   margin: 0;
   color: var(--color-red);
-  font-size: 7.2vh;
+  font-size: 6.4vh;
   letter-spacing: 0.1em;
 }
 
@@ -121,7 +120,7 @@ body {
 
 .lead {
   margin: 0;
-  font-size: 4.4vh;
+  font-size: 3.8vh;
   font-weight: bold;
   text-align: center;
 }
@@ -131,7 +130,7 @@ body {
   display: block;
   margin-top: 0.6vh;
   color: var(--color-red);
-  font-size: 3.5vh;
+  font-size: 3vh;
 }
 
 /* ---------- 左右に並べる部分 ---------- */
@@ -151,7 +150,7 @@ body {
 }
 
 .caption {
-  font-size: 3.7vh;
+  font-size: 3.2vh;
   font-weight: bold;
 }
 
@@ -406,7 +405,7 @@ body {
   list-style: none;
   display: flex;
   gap: 6vh;
-  font-size: 4.2vh;
+  font-size: 3.6vh;
   font-weight: bold;
 }
 
@@ -418,8 +417,8 @@ body {
 
 /* 玉の見本。色だけでなく「赤・青・黒」の文字も並べる（色の見分けが苦手な人にも伝わるように） */
 .ball {
-  width: 5.2vh;
-  height: 5.2vh;
+  width: 4.4vh;
+  height: 4.4vh;
   border: 0.4vh solid var(--color-text);
   border-radius: 50%;
 }
