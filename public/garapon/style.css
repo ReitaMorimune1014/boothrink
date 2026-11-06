@@ -27,15 +27,22 @@
   --angle-start: -30deg;
   --angle-end: 90deg;
 
-  /* ガラポン全体の大きさ（本体画像の幅＝高さ） */
+  /*
+    もとの写真での取っ手の向き（時計の4時 = 30deg）。このときドラムの回転を 0° とする。
+    Why: ドラムは取っ手と一体で回るので、「取っ手の角度 − 30deg」だけ回せば、
+         取っ手が写真の向きのときにドラムがイラストどおりの向きになる。
+  */
+  --angle-rest: 30deg;
+
+  /* ガラポン全体の大きさ（ドラム・土台の画像の幅＝高さ） */
   --garapon-size: 46vh;
 
   /*
-    本体画像の中の「軸の中心」の位置（画像の左上からの割合）。
-    画像を差し替えたら、ここを測り直す。
+    土台の画像の中の「軸の中心」の位置（画像の左上からの割合）。
+    ドラムの穴の中心もこの位置にそろえてある。画像を差し替えたら、ここを測り直す。
   */
-  --axle-x: 62.56%;
-  --axle-y: 46.33%;
+  --axle-x: 62.53%;
+  --axle-y: 46.3%;
 
   /*
     取っ手画像の大きさと「軸穴の中心」の位置。
@@ -200,15 +207,44 @@ body {
   height: var(--garapon-size);
 }
 
-.garapon-body {
-  display: block;
+.garapon-drum,
+.garapon-stand {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
 }
 
-/* 軸の位置に置いた「大きさ0の点」。この点を中心に取っ手を回す */
+/* ドラム（いちばん奥）。軸を中心に、取っ手と同じ速さ・同じタイミングで回る */
+.garapon-drum {
+  z-index: 0;
+  transform-origin: var(--axle-x) var(--axle-y);
+  animation: drum-swing var(--swing-duration) ease-in-out infinite;
+}
+
+/* 土台（ドラムより手前）。動かさない */
+.garapon-stand {
+  z-index: 1;
+}
+
+/*
+  取っ手の角度から --angle-rest を引いた分だけ回す。
+  Why: 取っ手と同じだけ回すことで、ドラムと取っ手が1つの物として動いて見える。
+*/
+@keyframes drum-swing {
+  0%,
+  100% {
+    transform: rotate(calc(var(--angle-start) - var(--angle-rest)));
+  }
+  50% {
+    transform: rotate(calc(var(--angle-end) - var(--angle-rest)));
+  }
+}
+
+/* 軸の位置に置いた「大きさ0の点」。この点を中心に取っ手を回す（土台より手前） */
 .handle-arm {
   position: absolute;
+  z-index: 2;
   left: var(--axle-x);
   top: var(--axle-y);
   width: 0;
@@ -253,6 +289,7 @@ body {
 .swing-mark {
   --mark-angle: calc((var(--angle-start) + var(--angle-end)) / 2);
   position: absolute;
+  z-index: 2;
   left: var(--axle-x);
   top: var(--axle-y);
   width: 9vh;

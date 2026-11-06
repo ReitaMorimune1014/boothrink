@@ -33,7 +33,15 @@
           <!-- 右: ガラポン本体と、往復する取っ手 -->
           <figure class="scene">
             <div class="garapon">
-              <img class="garapon-body" src="images/body.png" alt="ガラポン" />
+              <!--
+                ドラムと土台は別の画像。どちらも同じ大きさ・同じ座標でそろえてあるので、重ねるだけで元の絵になる。
+                重なり順（奥 → 手前）: ドラム → 土台 → 取っ手
+                Why: ドラムは取っ手と一緒に回り、土台は動かない。土台をドラムより手前にすると、
+                     回ったドラムの角が柱や台の前にはみ出して見えることがない。
+                     取っ手は柱の軸に付いているので、土台よりさらに手前に置く。
+              -->
+              <img class="garapon-drum" src="images/drum.png" alt="" />
+              <img class="garapon-stand" src="images/stand.png" alt="ガラポン" />
 
               <!--
                 取っ手が往復する範囲の、ちょうど真ん中の外側に「⇔」を置く。
