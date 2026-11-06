@@ -12,44 +12,76 @@
   </head>
   <body>
     <main class="page">
-      <h1 class="title">ゆりかごみたいに ゆらゆら回してね</h1>
+      <!--
+        白いコンテナに中身をまとめ、外側だけを赤にする。
+        Why: 全面が赤だと派手すぎて読みにくいため。赤は外枠として残し、店のイメージカラーは保つ。
+      -->
+      <div class="container">
+        <h1 class="title">ゆりかごみたいに ゆらゆら回してね</h1>
 
-      <div class="stage">
-        <!-- 左: タコの赤ちゃんのゆりかご（見立て） -->
-        <figure class="scene">
-          <div class="cradle-box">
-            <img class="cradle" src="images/cradle.png" alt="ゆりかごで眠るタコの赤ちゃん" />
-          </div>
-          <figcaption class="caption">タコの赤ちゃんを ゆらすように…</figcaption>
-        </figure>
-
-        <p class="equals" aria-hidden="true">＝</p>
-
-        <!-- 右: ガラポン本体と、2時⇄6時で揺れる取っ手 -->
-        <figure class="scene">
-          <div class="garapon">
-            <img class="garapon-body" src="images/body.png" alt="ガラポン" />
-
-            <!-- 取っ手が往復する端（2時と6時）の目印 -->
-            <span class="marker" style="--marker-angle: -30deg">2時</span>
-            <span class="marker" style="--marker-angle: 90deg">6時</span>
-
-            <!--
-              handle-arm は「軸の位置にある大きさ0の点」。この点を回転させる。
-              Why: 回転の中心を軸に固定しておけば、取っ手の画像を差し替えても
-                   画像内の軸穴の位置（CSS変数）を直すだけで済む。
-            -->
-            <div class="handle-arm">
-              <img class="handle" src="images/handle.png" alt="" />
+        <div class="stage">
+          <!-- 左: タコの赤ちゃんのゆりかご（見立て） -->
+          <figure class="scene">
+            <div class="cradle-box">
+              <img class="cradle" src="images/cradle.png" alt="ゆりかごで眠るタコの赤ちゃん" />
             </div>
-          </div>
-          <figcaption class="caption">取っ手を 2時 ↔ 6時 で往復</figcaption>
-        </figure>
-      </div>
+            <figcaption class="caption">タコの赤ちゃんを ゆらすように…</figcaption>
+          </figure>
 
-      <p class="lead">
-        取っ手を <strong>2時</strong> から <strong>6時</strong> まで ゆらゆら動かすと、玉が出てくるよ
-      </p>
+          <p class="equals" aria-hidden="true">＝</p>
+
+          <!-- 右: ガラポン本体と、往復する取っ手 -->
+          <figure class="scene">
+            <div class="garapon">
+              <img class="garapon-body" src="images/body.png" alt="ガラポン" />
+
+              <!--
+                取っ手が往復する範囲の、ちょうど真ん中の外側に「⇔」を置く。
+                Why: 「2時・6時」は時計に例えた言い方で、お客さんには伝わりにくい。
+                     矢印なら「この範囲を行ったり来たり」が見ただけで分かる。
+                ⇔ を文字で書くと、フォントによって太さや形が変わるので、同じ形を SVG で描いている。
+              -->
+              <svg class="swing-mark" viewBox="0 0 120 60" aria-hidden="true">
+                <path d="M30 22 H90 M30 38 H90 M42 8 L12 30 L42 52 M78 8 L108 30 L78 52" />
+              </svg>
+
+              <!--
+                handle-arm は「軸の位置にある大きさ0の点」。この点を回転させる。
+                Why: 回転の中心を軸に固定しておけば、取っ手の画像を差し替えても
+                     画像内の軸穴の位置（CSS変数）を直すだけで済む。
+              -->
+              <div class="handle-arm">
+                <img class="handle" src="images/handle.png" alt="" />
+              </div>
+            </div>
+            <figcaption class="caption">
+              取っ手を
+              <svg class="arrow-icon" viewBox="0 0 120 60" aria-hidden="true">
+                <path d="M30 22 H90 M30 38 H90 M42 8 L12 30 L42 52 M78 8 L108 30 L78 52" />
+              </svg>
+              ゆらゆら往復
+            </figcaption>
+          </figure>
+        </div>
+
+        <p class="lead">1周回さずに、取っ手を行ったり来たりさせると 玉が出てくるよ</p>
+
+        <!-- 出た玉の色と特典 -->
+        <ul class="prizes" aria-label="玉の色と特典">
+          <li class="prize">
+            <span class="ball ball-red" aria-hidden="true"></span>
+            <span>赤 … たこ焼き <strong class="accent">＋2個</strong></span>
+          </li>
+          <li class="prize">
+            <span class="ball ball-blue" aria-hidden="true"></span>
+            <span>青 … たこ焼き <strong class="accent">＋1個</strong></span>
+          </li>
+          <li class="prize">
+            <span class="ball ball-black" aria-hidden="true"></span>
+            <span>黒 … はずれ</span>
+          </li>
+        </ul>
+      </div>
     </main>
 
     <script src="script.js"></script>

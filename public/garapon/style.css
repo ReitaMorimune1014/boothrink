@@ -9,7 +9,9 @@
   --color-red: #e60033;
   --color-red-dark: #b8002a;
   --color-white: #ffffff;
-  --color-yellow: #ffe14d;
+  --color-text: #4a2511; /* イラストの線と同じ濃い茶色。白地で読みやすく、絵ともなじむ */
+  --color-ball-blue: #1f6fd1;
+  --color-ball-black: #222222;
 
   /*
     揺れの速さ（1往復の時間）。ゆりかごと取っ手で同じ値を使う。
@@ -18,12 +20,15 @@
   */
   --swing-duration: 2s;
 
-  /* 取っ手が往復する角度（3時の向きを 0° とした時計回りの角度） */
-  --angle-2oclock: -30deg;
-  --angle-6oclock: 90deg;
+  /*
+    取っ手が往復する角度（3時の向きを 0° とした時計回りの角度）。
+    -30deg が時計の2時、90deg が6時の向き。画面には出さない、コードの中だけの基準。
+  */
+  --angle-start: -30deg;
+  --angle-end: 90deg;
 
   /* ガラポン全体の大きさ（本体画像の幅＝高さ） */
-  --garapon-size: 52vh;
+  --garapon-size: 46vh;
 
   /*
     本体画像の中の「軸の中心」の位置（画像の左上からの割合）。
@@ -36,7 +41,7 @@
     取っ手画像の大きさと「軸穴の中心」の位置。
     --handle-width: 本体に対する取っ手の長さ
     --handle-pivot-x / y: 取っ手画像の中の軸穴の位置（画像の幅・高さに対する割合）
-    --handle-reach: 軸穴から持ち手までの長さ（目印をこの距離に置く）
+    --handle-reach: 軸穴から持ち手までの長さ（⇔ をこの距離より外に置く）
   */
   --handle-width: calc(var(--garapon-size) * 0.6);
   --handle-pivot-x: 0.155;
@@ -48,7 +53,7 @@
     Why: カーブの中心で回すと、底が床の上を転がるように動き、本物のゆりかごに見える。
          底の真ん中で回すと、片側が浮いて倒れそうな動きになる。
   */
-  --cradle-size: 46vh;
+  --cradle-size: 40vh;
   --cradle-origin: 50% 46.1%;
   --cradle-angle: 10deg;
 
@@ -71,8 +76,9 @@ body {
 }
 
 body {
+  /* コンテナの外側だけが赤になる */
   background: var(--color-red);
-  color: var(--color-white);
+  color: var(--color-text);
   font-family: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", "Meiryo", sans-serif;
   /* Why: 全画面で流しっぱなしにするので、マウスカーソルを画面に出さない */
   cursor: none;
@@ -82,32 +88,36 @@ body {
 
 .page {
   height: 100vh;
+  padding: 3vh;
+}
+
+.container {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
   padding: 2vh 4vh;
+  border: 0.8vh solid var(--color-red-dark);
+  border-radius: 3vh;
+  background: var(--color-white);
 }
 
 .title {
   margin: 0;
-  font-size: 7vh;
+  color: var(--color-red);
+  font-size: 6.4vh;
   letter-spacing: 0.1em;
-  text-shadow: 0 0.6vh 0 var(--color-red-dark);
+}
+
+.accent {
+  color: var(--color-red);
 }
 
 .lead {
   margin: 0;
-  padding: 1.5vh 4vh;
-  border-radius: 999px;
-  background: var(--color-white);
-  color: var(--color-red);
-  font-size: 4.4vh;
+  font-size: 3.8vh;
   font-weight: bold;
-}
-
-.lead strong {
-  font-size: 1.3em;
 }
 
 /* ---------- 左右に並べる部分 ---------- */
@@ -127,13 +137,14 @@ body {
 }
 
 .caption {
-  font-size: 3.4vh;
+  font-size: 3.2vh;
   font-weight: bold;
 }
 
 .equals {
   margin: 0;
-  font-size: 10vh;
+  color: var(--color-red);
+  font-size: 9vh;
   font-weight: bold;
 }
 
@@ -153,7 +164,7 @@ body {
   right: 4%;
   top: var(--cradle-floor-y);
   height: 4%;
-  border: 0.5vh solid #4a2511;
+  border: 0.5vh solid var(--color-text);
   border-radius: 1vh;
   background: #f2d7a0;
 }
@@ -168,7 +179,7 @@ body {
 }
 
 /*
-  取っ手が 2時（上）にあるとき左に、6時（下）にあるとき右に傾く。
+  取っ手が上の端にあるとき左に、下の端にあるとき右に傾く。
   Why: 取っ手と同じタイミングで端に着くようにして、動きの対応を見て分かるようにする。
 */
 @keyframes cradle-swing {
@@ -185,8 +196,6 @@ body {
 
 .garapon {
   position: relative;
-  /* Why: 6時の目印が画像の下にはみ出すので、説明文と重ならないよう下に余白をとる */
-  margin-bottom: 5vh;
   width: var(--garapon-size);
   height: var(--garapon-size);
 }
@@ -222,31 +231,86 @@ body {
 @keyframes handle-swing {
   0%,
   100% {
-    transform: rotate(var(--angle-2oclock));
+    transform: rotate(var(--angle-start));
   }
   50% {
-    transform: rotate(var(--angle-6oclock));
+    transform: rotate(var(--angle-end));
   }
 }
 
 /*
-  2時・6時の目印。軸から持ち手までの距離だけ離した位置に置く。
-  rotate → translateX で円周上の位置に移動し、逆向きに rotate して文字をまっすぐに戻す。
+  取っ手が動く範囲を表す「⇔」。
+  - 置く角度: 往復の真ん中（-30deg と 90deg の真ん中 = 30deg）
+  - 置く距離: 持ち手より少し外側（取っ手と重ならないように）
+  - 向き: 円の接線の向きにして、矢印が取っ手の動く方向を指すようにする
+
+  transform は左から順に、軸の点（transform-origin: 0 0）を基準に次のように動く。
+    1. rotate(30deg)     … 軸から外へ向かう線を、往復の真ん中の向きにする
+    2. translateX(距離)  … その線に沿って、持ち手より外側まで移動する
+    3. rotate(90deg)     … 外向きから90°回すと、円の接線（取っ手が動く向き）になる
+    4. translate(-50%, -50%) … 矢印の中心がその点に来るようにずらす
 */
-.marker {
+.swing-mark {
+  --mark-angle: calc((var(--angle-start) + var(--angle-end)) / 2);
   position: absolute;
-  /* Why: 取っ手が端に来ても、目印の文字が隠れないように手前に出す */
-  z-index: 1;
   left: var(--axle-x);
   top: var(--axle-y);
-  padding: 0.4vh 1.2vh;
-  border: 0.4vh solid var(--color-red);
-  border-radius: 999px;
-  background: var(--color-yellow);
-  color: var(--color-red);
-  font-size: 2.8vh;
+  width: 9vh;
+  transform-origin: 0 0;
+  transform: rotate(var(--mark-angle)) translateX(calc(var(--handle-reach) + 7vh))
+    rotate(90deg) translate(-50%, -50%);
+}
+
+/* ⇔ の線の太さと色。.swing-mark と .arrow-icon で共通 */
+.swing-mark path,
+.arrow-icon path {
+  fill: none;
+  stroke: var(--color-red);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 文章の中に置く小さい ⇔ */
+.arrow-icon {
+  width: 1.8em;
+  vertical-align: middle;
+}
+
+/* ---------- 玉の色と特典 ---------- */
+
+.prizes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 6vh;
+  font-size: 3.6vh;
   font-weight: bold;
-  white-space: nowrap;
-  transform: rotate(var(--marker-angle)) translateX(calc(var(--handle-reach) + 7vh))
-    rotate(calc(var(--marker-angle) * -1)) translate(-50%, -50%);
+}
+
+.prize {
+  display: flex;
+  align-items: center;
+  gap: 1.2vh;
+}
+
+/* 玉の見本。色だけでなく「赤・青・黒」の文字も並べる（色の見分けが苦手な人にも伝わるように） */
+.ball {
+  width: 4.4vh;
+  height: 4.4vh;
+  border: 0.4vh solid var(--color-text);
+  border-radius: 50%;
+}
+
+.ball-red {
+  background: var(--color-red);
+}
+
+.ball-blue {
+  background: var(--color-ball-blue);
+}
+
+.ball-black {
+  background: var(--color-ball-black);
 }
